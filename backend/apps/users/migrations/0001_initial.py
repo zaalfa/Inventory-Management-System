@@ -1,0 +1,57 @@
+from django.db import migrations, models
+import django.utils.timezone
+
+
+class Migration(migrations.Migration):
+
+    initial = True
+
+    dependencies = []
+
+    operations = [
+        migrations.CreateModel(
+            name='User',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('password', models.CharField(max_length=128, verbose_name='password')),
+                ('is_superuser', models.BooleanField(default=False)),
+                ('email', models.EmailField(max_length=254, unique=True)),
+                ('name', models.CharField(max_length=150)),
+                ('role', models.CharField(
+                    choices=[('admin', 'Admin'), ('manager', 'Manager'), ('cashier', 'Cashier')],
+                    default='cashier', max_length=20
+                )),
+                ('is_active', models.BooleanField(default=True)),
+                ('is_staff', models.BooleanField(default=False)),
+                ('date_joined', models.DateTimeField(default=django.utils.timezone.now)),
+                ('last_login', models.DateTimeField(blank=True, null=True)),
+            ],
+            options={'db_table': 'users', 'ordering': ['name']},
+        ),
+        migrations.CreateModel(
+            name='UserGroups',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('user', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='users.user'
+                )),
+                ('group', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='auth.group'
+                )),
+            ],
+            options={'db_table': 'user_groups', 'managed': False},
+        ),
+        migrations.CreateModel(
+            name='UserPermissions',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('user', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='users.user'
+                )),
+                ('permission', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='auth.permission'
+                )),
+            ],
+            options={'db_table': 'user_permissions', 'managed': False},
+        ),
+    ]
